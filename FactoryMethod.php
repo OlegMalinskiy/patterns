@@ -18,21 +18,21 @@ abstract class Creator {
 
 class CostaCreator extends Creator {
 
-	public function getProduct() {
+	public function getProduct(): Product {
 		return new CostaProduct;
 	}
 }
 
 class MscCreator extends Creator {
 
-	public function getProduct() {
+	public function getProduct(): Product {
 		return new MscProduct;
 	}
 }
 
 class CelestyalCreator extends Creator {
 
-	public function getProduct() {
+	public function getProduct(): Product {
 		return new CelestyalProduct;
 	}
 }
@@ -45,62 +45,52 @@ interface Product {
 
 class CostaProduct implements Product {
 
-	public function make(){
-		echo 'make something by CostaProduct class';
-		return true;
+	public function make(): void {
+		echo '<p>make something by CostaProduct class</p>';
 	}
 
-	public function edit(){
-		echo 'edit something by CostaProduct class';
-		return true;
+	public function edit(): void {
+		echo '<p>edit something by CostaProduct class</p>';
 	}
 
-	public function delete(){
-		echo 'delete something by CostaProduct class';
-		return true;
+	public function delete(): void {
+		echo '<p>delete something by CostaProduct class</p>';
 	}
 }
 
 class MscProduct implements Product {
 
-	public function make(){
-		echo 'make something by MscProduct class';
-		return true;
+	public function make(): void {
+		echo '<p>make something by MscProduct class</p>';
 	}
 
-	public function edit(){
-		echo 'edit something by MscProduct class';
-		return true;
+	public function edit(): void {
+		echo '<p>edit something by MscProduct class</p>';
 	}
 
-	public function delete(){
-		echo 'delete something by MscProduct class';
-		return true;
+	public function delete(): void {
+		echo '<p>delete something by MscProduct class</p>';
 	}
 }
 
 class CelestyalProduct implements Product {
 
-	public function make(){
-		echo 'make something by CelestyalProduct class';
-		return true;
+	public function make(): void {
+		echo '<p>make something by CelestyalProduct class</p>';
 	}
 
-	public function edit(){
-		echo 'edit something by CelestyalProduct class';
-		return true;
+	public function edit(): void {
+		echo '<p>edit something by CelestyalProduct class</p>';
 	}
 	
-	public function delete(){
-		echo 'delete something by CelestyalProduct class';
-		return true;
+	public function delete(): void {
+		echo '<p>delete something by CelestyalProduct class</p>';
 	}
 }
 
 
 function clientCode(Creator $creator) {
 
-	$creator->doOperation();
 	$creator->doOperation();
 
 }
