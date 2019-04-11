@@ -71,7 +71,7 @@ function clientCode()
 
     $draft = clone $page;
     echo "Dump of the clone. Note that the author is now referencing two objects.\n\n";
-    print_r($page);
+    print_r($draft);
 }
 
 clientCode();
