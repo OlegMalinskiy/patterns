@@ -1,61 +1,59 @@
 <?php
 
-class Facade {
+class Facade
+{
+    protected FirstLibraryClass $firstLibrary;
+    protected SecondLibraryClass $secondLibrary;
 
-	protected $firstLibrary;
-	protected $secondLibrary;
+    public function __construct()
+    {
+        $this->firstLibrary = new FirstLibraryClass;
+        $this->secondLibrary = new SecondLibraryClass;
+    }
 
-	public function __construct() {
+    public function operation(): string
+    {
+        $result = '';
 
-		$this->firstLibrary = new FirstLibraryClass;
-		$this->secondLibrary = new SecondLibraryClass;
-	}
+        $result .= $this->firstLibrary->doSomeOperation();
+        $result .= $this->secondLibrary->doMoreOperation();
+        $result .= '<p>Add another functionality</p>';
+        $result .= $this->firstLibrary->doAnotherOperation();
+        $result .= $this->secondLibrary->doOperation();
 
-	public function operation() {
-
-		$result = '';
-
-		$result .= $this->firstLibrary->doSomeOperation();
-		$result .= $this->secondLibrary->doMoreOperation();
-		$result .= '<p>Add another functionality</p>';
-		$result .= $this->firstLibrary->doAnotherOperation();
-		$result .= $this->secondLibrary->doOperation();
-
-		return $result;
-	}
+        return $result;
+    }
 }
 
 
+class FirstLibraryClass
+{
+    public function doSomeOperation(): string
+    {
+        return '<p>Do some operation from FirstLibraryClass</p>';
+    }
 
-class FirstLibraryClass {
-
-	public function doSomeOperation(): string {
-		return '<p>Do some operation from FirstLibraryClass</p>';
-	}
-
-	public function doAnotherOperation(): string {
-		return '<p>Do another operation from FirstLibraryClass</p>';
-	}
+    public function doAnotherOperation(): string
+    {
+        return '<p>Do another operation from FirstLibraryClass</p>';
+    }
 }
 
-class SecondLibraryClass {
+class SecondLibraryClass
+{
+    public function doOperation(): string
+    {
+        return '<p>Do operation from SecondLibraryClass</p>';
+    }
 
-	public function doOperation(): string {
-		return '<p>Do operation from SecondLibraryClass</p>';
-	}
-
-	public function doMoreOperation(): string {
-		return '<p>Do more operation from SecondLibraryClass</p>';
-	}
+    public function doMoreOperation(): string
+    {
+        return '<p>Do more operation from SecondLibraryClass</p>';
+    }
 }
-
 
 function clientCode(Facade $facade) {
-
-	echo $facade->operation();
+    echo $facade->operation();
 }
 
 clientCode(new Facade);
-
-
-?>

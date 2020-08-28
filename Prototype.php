@@ -2,21 +2,11 @@
 
 class Page
 {
-    private $title;
-
-    private $body;
-
-    /**
-     * @var Author
-     */
-    private $author;
-
-    private $comments = [];
-
-    /**
-     * @var \DateTime
-     */
-    private $date;
+    private string $title;
+    private string $body;
+    private Author $author;
+    private array $comments = [];
+    private DateTime $date;
 
     public function __construct(string $title, string $body, Author $author)
     {
@@ -24,7 +14,7 @@ class Page
         $this->body = $body;
         $this->author = $author;
         $this->author->addToPage($this);
-        $this->date = new \DateTime;
+        $this->date = new DateTime;
     }
 
     public function addComment(string $comment): void
@@ -37,18 +27,17 @@ class Page
         $this->title = "Copy of " . $this->title;
         $this->author->addToPage($this);
         $this->comments = [];
-        $this->date = new \DateTime;
+        $this->date = new DateTime;
     }
 }
 
 class Author
 {
-    private $name;
-
+    private string $name;
     /**
      * @var Page[]
      */
-    private $pages = [];
+    private array $pages = [];
 
     public function __construct(string $name)
     {
@@ -62,8 +51,7 @@ class Author
 }
 
 
-function clientCode()
-{
+function clientCode() {
     $author = new Author("John Smith");
     $page = new Page("Tip of the day", "Keep calm and carry on.", $author);
 

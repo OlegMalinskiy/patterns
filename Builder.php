@@ -1,7 +1,7 @@
 <?php
 
-interface SqlBuilder {
-
+interface SqlBuilder
+{
     public function select(string $table, array $fields): SqlBuilder;
 
     public function where(string $field, string $value, string $operator = '='): SqlBuilder;
@@ -11,17 +11,17 @@ interface SqlBuilder {
     public function getSql(): string;
 }
 
-class MysqlBuilder implements SqlBuilder {
+class MysqlBuilder implements SqlBuilder
+{
+    protected StdClass $query;
 
-    protected $query;
-
-    public function reset(): void {
-
-        $this->query = new \StdClass;
+    public function reset(): void
+    {
+        $this->query = new StdClass;
     }
 
-    public function select(string $table, array $fields): SqlBuilder {
-
+    public function select(string $table, array $fields): SqlBuilder
+    {
         $this->reset();
 
         $this->query->basic = "SELECT " . implode(', ', $fields) . " FROM " . $table;
@@ -30,8 +30,8 @@ class MysqlBuilder implements SqlBuilder {
         return $this;
     }
 
-    public function where(string $field, string $value, string $operator = '='): SqlBuilder {
-
+    public function where(string $field, string $value, string $operator = '='): SqlBuilder
+    {
         if (!in_array($this->query->type, ['select', 'update'])) {
             throw new Exception('Method WHERE can be used only after SELECT or UPDATE');
         }
@@ -41,8 +41,8 @@ class MysqlBuilder implements SqlBuilder {
         return $this;
     }
 
-    public function limit(int $start, int $offset): SqlBuilder {
-
+    public function limit(int $start, int $offset): SqlBuilder
+    {
         if (!in_array($this->query->type, ['select'])) {
             throw new Exception('Method LIMIT can be used only with SELECT');
         }
@@ -52,43 +52,40 @@ class MysqlBuilder implements SqlBuilder {
         return $this;
     }
 
-    public function getSql(): string {
+    public function getSql(): string
+    {
+        $sql = $this->query->basic;
 
-        $query = $this->query;
-
-        $sql = $query->basic;
-
-        if (!empty($query->where)) {
-            $sql .= ' WHERE ' . implode(' AND ', $query->where);
+        if (!empty($this->query->where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $this->query->where);
         }
 
-        if (isset($query->limit)) {
-            $sql .= $query->limit;
+        if (isset($this->query->limit)) {
+            $sql .= $this->query->limit;
         }
 
         return $sql;
     }
 }
 
-class PgsqlBuilder extends MysqlBuilder {
+class PgsqlBuilder extends MysqlBuilder
+{
+    public function limit(int $start, int $offset): SqlBuilder
+    {
+        parent::limit($start, $offset);
 
-	public function limit(int $start, int $offset): SqlBuilder {
-		parent::limit($start, $offset);
+        $this->query->limit = " LIMIT " . $start . " OFFSET " . $offset;
 
-		$this->query->limit = " LIMIT " . $start . " OFFSET " . $offset;
-
-		return $this;
-	}
-
+        return $this;
+    }
 }
 
-function clientFunction(SqlBuilder $builder) {
-
+function clientFunction(SqlBuilder $builder): void {
     $result = $builder->select('user', ['name', 'phone', 'age'])
-                      ->where('age', '25', '>')
-                      ->where('name', 'John')
-                      ->limit(40, 20)
-                      ->getSql();
+        ->where('age', '25', '>')
+        ->where('name', 'John')
+        ->limit(40, 20)
+        ->getSql();
     echo '<p>' . $result . '</p>';
 }
 

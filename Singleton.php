@@ -1,19 +1,24 @@
 <?php
 
-class Singleton {
+class Singleton
+{
+    private static array $instance = [];
 
-    private static $instance = [];
+    protected function __construct()
+    {
+    }
 
-    protected function __construct() {}
+    private function __clone()
+    {
+    }
 
-    private function __clone() {}
-
-    private function __wakeup() {
+    private function __wakeup()
+    {
         throw new Exception("Cannot use __wakeup method in singleton class");
     }
 
-    public static function getInstance() {
-
+    public static function getInstance(): self
+    {
         $class = static::class;
 
         if (!isset(self::$instance[$class])) {
@@ -26,7 +31,6 @@ class Singleton {
 }
 
 function clientCode() {
-
     $std = Singleton::getInstance();
     $std->opt1 = 'opt1';
     $std1 = Singleton::getInstance();
@@ -41,5 +45,3 @@ function clientCode() {
 }
 
 clientCode();
-
-?>

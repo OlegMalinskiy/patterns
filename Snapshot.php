@@ -1,115 +1,101 @@
 <?php
 
-class Original {
+class Original
+{
+    private string $info;
 
-	/**
-	 * @var string
-	 */
-	private $info;
+    public function __construct(string $data)
+    {
+        $this->info = $data;
+        echo "<p>Original:Initialize object with property '{$this->info}'</p>";
+    }
 
-	public function __construct(string $data) {
+    public function changeInfo(string $data): void
+    {
+        $this->info = $data;
+        echo "<p>Original:Change object property to '{$this->info}'</p>";
+    }
 
-		$this->info = $data;
-		echo "<p>Original:Initialize object with property '{$this->info}'</p>";
-	}
+    public function save(): Snapshot
+    {
+        return new SimpleSnapshot($this->info);
+    }
 
-	public function changeInfo(string $data): void {
-
-		$this->info = $data;
-		echo "<p>Original:Change object property to '{$this->info}'</p>";
-	}
-
-	public function save(): Snapshot {
-
-		return new SimpleSnapshot($this->info);
-	}
-
-	public function back(Snapshot $snapshot): void {
-
-		$this->info = $snapshot->getInfo();
-	}
+    public function back(Snapshot $snapshot): void
+    {
+        $this->info = $snapshot->getInfo();
+    }
 
 }
 
-interface Snapshot {
-
-	public function getName(): string;
-
-	public function getDate(): string;
+interface Snapshot
+{
+    public function getName(): string;
+    public function getDate(): string;
 }
 
-class SimpleSnapshot implements Snapshot {
+class SimpleSnapshot implements Snapshot
+{
+    private string $info;
+    private DateTimeImmutable $date;
 
-	/**
-	 * @var string
-	 */
-	private $info;
-	private $date;
+    public function __construct(string $data)
+    {
+        $this->info = $data;
+        $this->date = new DateTimeImmutable();
+    }
 
-	public function __construct($data) {
+    public function getInfo(): string
+    {
+        return $this->info;
+    }
 
-		$this->info = $data;
-		$this->date = date("d-m-Y H:i:s");
-	}
+    public function getName(): string
+    {
+        return sprintf("<: %s / %s :>", $this->info, $this->date->format('Y-m-d H:i:s'));
+    }
 
-	public function getInfo(): string {
-
-		return $this->info;
-	}
-
-	public function getName(): string {
-
-		return sprintf("<: %s / %s :>", $this->info, $this->date);
-	}
-
-	public function getDate(): string {
-
-		return $this->date;
-	}
+    public function getDate(): string
+    {
+        return $this->date;
+    }
 
 }
 
-class TakeCare {
+class TakeCare
+{
+    private array $snapshots = [];
+    private Original $original;
 
-	/**
-	 * @var Snapshot
-	 */
-	private $snapshots = [];
+    public function __construct(Original $original)
+    {
+        $this->original = $original;
+    }
 
-	/**
-	 * @var Original
-	 */
-	private $original;
+    public function backup(): void
+    {
+        echo "<p>TakeCare: Create backup for Original:object...</p>";
+        $this->snapshots[] = $this->original->save();
+    }
 
-	public function __construct(Original $original) {
+    public function rollback(): void
+    {
+        if (empty($this->snapshots)) return;
 
-		$this->original = $original;
-	}
+        $snapshot = array_pop($this->snapshots);
 
-	public function backup(): void {
+        echo "<p>TakeCare: Rollback Original:object to state - {$snapshot->getName()}</p>";
 
-		echo "<p>TakeCare: Create backup for Original:object...</p>";
-		$this->snapshots[] = $this->original->save();
-	}
+        $this->original->back($snapshot);
+    }
 
-	public function rollback(): void {
-
-		if (empty($this->snapshots)) return;
-
-		$snapshot = array_pop($this->snapshots);
-
-		echo "<p>TakeCare: Rollback Original:object to state - {$snapshot->getName()}</p>";
-
-		$this->original->back($snapshot);
-	}
-
-	public function showHistory() : void {
-
-		echo "<p>TakeCare: All list of snapshots</p>";
-		foreach ($this->snapshots as $snapshot) {
-			echo "<p>" . $snapshot->getName() . "</p>";
-		}
-	}
+    public function showHistory(): void
+    {
+        echo "<p>TakeCare: All list of snapshots</p>";
+        foreach ($this->snapshots as $snapshot) {
+            echo "<p>" . $snapshot->getName() . "</p>";
+        }
+    }
 }
 
 $original = new Original("first state of Original");
@@ -134,5 +120,3 @@ echo "<p>And one more time!</p>";
 $takecare->rollback();
 
 print_r($original);
-
-?>

@@ -1,66 +1,64 @@
 <?php
 
-interface Input {
-	public function getInfo(): string;
+interface Input
+{
+    public function getInfo(): string;
 }
 
-class TextComponent implements Input {
+class TextComponent implements Input
+{
+    protected string $text;
 
-	protected $text;
+    public function __construct(string $text)
+    {
+        $this->text = $text;
+    }
 
-	public function __construct(string $text) {
-
-		$this->text = $text;
-	}
-
-	public function getInfo(): string {
-
-		return $this->text;
-	}
+    public function getInfo(): string
+    {
+        return $this->text;
+    }
 }
 
-class MainDecorator implements Input {
+class MainDecorator implements Input
+{
+    protected Input $wrap;
 
-	protected $wrap;
+    public function __construct(Input $wrap)
+    {
+        $this->wrap = $wrap;
+    }
 
-	public function __construct(Input $wrap){
-
-		$this->wrap = $wrap;
-	}
-
-	public function getInfo(): string {
-
-		return $this->wrap->getInfo();
-	}
+    public function getInfo(): string
+    {
+        return $this->wrap->getInfo();
+    }
 }
 
-class SaveTextDecorator extends MainDecorator {
+class SaveTextDecorator extends MainDecorator
+{
+    public function getInfo(): string
+    {
+        $text = parent::getInfo();
 
-	public function getInfo(): string {
-
-		$text = parent::getInfo();
-
-		return strip_tags(trim($text));
-	}
+        return strip_tags(trim($text));
+    }
 }
 
-class FormatTextDecorator extends MainDecorator {
+class FormatTextDecorator extends MainDecorator
+{
+    public function getInfo(): string
+    {
+        $text = parent::getInfo();
 
-	public function getInfo(): string {
-
-		$text = parent::getInfo();
-
-		return ucfirst(strtolower($text));
-	}
+        return ucfirst(strtolower($text));
+    }
 }
 
 
-function clientCode(Input $input) {
-
-	echo $input->getInfo();
-
+function clientCode(Input $input): void {
+    echo $input->getInfo();
 }
-
 
 $input = new TextComponent('Very simple text');
 
@@ -74,5 +72,3 @@ $input = new SaveTextDecorator(new TextComponent('   <h3>TexT WitH Different ita
 $input = new FormatTextDecorator($input);
 
 clientCode($input);
-
-?>
